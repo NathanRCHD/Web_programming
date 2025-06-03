@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .config import settings
+from src.config import settings
+from src.api.api_v1.api import api_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -17,6 +18,10 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
+# Routes principales
+app.include_router(api_router, prefix=settings.API_V1_STR)
+
+# Route racine
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Library Management System API"}

@@ -1,25 +1,25 @@
 from sqlalchemy.orm import Session
 from typing import List
 
-from .base import BaseRepository
-from ..models.books import Book
+from src.repositories.base import BaseRepository
+from src.models.books import Book as BookModel
+from src.api.schemas.books import BookCreate, BookUpdate  # <-- correction ici
 
-
-class BookRepository(BaseRepository[Book, None, None]):
-    def get_by_isbn(self, db: Session, *, isbn: str) -> Book:
+class BookRepository(BaseRepository[BookModel, BookCreate, BookUpdate]):
+    def get_by_isbn(self, db: Session, *, isbn: str) -> BookModel:
         """
         Récupère un livre par son ISBN.
         """
-        return db.query(Book).filter(Book.isbn == isbn).first()
+        return db.query(BookModel).filter(BookModel.isbn == isbn).first()
 
-    def get_by_title(self, db: Session, *, title: str) -> List[Book]:
+    def get_by_title(self, db: Session, *, title: str) -> List[BookModel]:
         """
         Récupère des livres par leur titre (recherche partielle).
         """
-        return db.query(Book).filter(Book.title.ilike(f"%{title}%")).all()
+        return db.query(BookModel).filter(BookModel.title.ilike(f"%{title}%")).all()
 
-    def get_by_author(self, db: Session, *, author: str) -> List[Book]:
+    def get_by_author(self, db: Session, *, author: str) -> List[BookModel]:
         """
         Récupère des livres par leur auteur (recherche partielle).
         """
-        return db.query(Book).filter(Book.author.ilike(f"%{author}%")).all()
+        return db.query(BookModel).filter(BookModel.author.ilike(f"%{author}%")).all()
